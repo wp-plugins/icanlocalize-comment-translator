@@ -1,5 +1,5 @@
 === ICanLocalize Comment Translator ===
-Contributors: Mihai Grigori, ICanLocalize
+Contributors: ICanLocalize
 Tags: translation, localization, language, multi-lingual
 Requires at least: 2.6
 Tested up to: 2.7 (Beta 3)
