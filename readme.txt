@@ -1,6 +1,6 @@
 === ICanLocalize Comment Translator ===
 Contributors: ICanLocalize
-Tags: translation, localization, language, multi-lingual
+Tags: i18n, translation, localization, language, multilingual
 Requires at least: 2.6
 Tested up to: 2.7 (Beta 3)
 Stable tag: 0.2
