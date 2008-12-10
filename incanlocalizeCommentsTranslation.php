@@ -125,7 +125,7 @@ class ICanLocalizeTBTranslate{
         $this->access_key = $_POST['iclt_access_key'];
         $this->validate_settings();
         if(!$this->valid){
-            $_GET['iclt_error']=__('Invalid settings for ICanLocalize Comment Translator');        
+            $_GET['iclt_error'] .= __('Invalid settings for ICanLocalize Comment Translator');        
         }else{
             $_GET['updated']=true;        
         }
@@ -426,7 +426,17 @@ class ICanLocalizeTBTranslate{
     function validate_settings(){
         require_once(ABSPATH . '/wp-includes/class-snoopy.php');
         $request =  ICL_API_ENDOINT . 'websites/' . $this->site_id . '.xml?accesskey=' . $this->access_key;
+        
+        $de = ini_get('display_errors');
+        ini_set('display_errors','off');
         $c = new Snoopy();
+        if($c->error){
+            $_GET['iclt_error'] = __('Error: ') . $c->error.'<br />';
+            $this->valid = false;
+            return false;
+        }
+        ini_set('display_errors',$de);
+        
         $url_parts = parse_url($request);
         $https = $url_parts['scheme']=='https';
         $c->fetch($request);            
