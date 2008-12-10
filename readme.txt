@@ -71,3 +71,5 @@ All linking information between the contents in different languages is simply st
 
 * Version 0.2
 	* First public release
+* Version 1.0
+    * Bug fixes
