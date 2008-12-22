@@ -5,7 +5,7 @@ Plugin URI: http://design.icanlocalize.com/wordpress-translation/
 Description: Receives professionally translated posts and pages from ICanLocalize's translation system and allows comment moderation in your language. To configure the plugin, you'll need an setup an account at <a href="http://www.icanlocalize.com">www.icanlocalize.com</a>. <a href="options-general.php?page=iclttc">Configure &raquo;</a>.
 Author: ICanLocalize
 Author URI: http://www.icanlocalize.com
-Version: 1.0
+Version: 1.1
 */
 
 /*
@@ -107,6 +107,11 @@ class ICanLocalizeTBTranslate{
         
         $this->pending_requests = $wpdb->get_col("SELECT comment_id FROM {$wpdb->prefix}comments_translation_requests");
         
+        if($_POST['iclttc_ajx_action']){            
+            $this->ajax_actions($_POST['iclttc_ajx_action']);
+            exit;
+        }        
+        
     }
     
     function management_page(){
@@ -114,6 +119,8 @@ class ICanLocalizeTBTranslate{
     }
     
     function management_page_content(){
+        global $wpdb;
+        $links_map_size = $wpdb->get_var("SELECT COUNT(*) FROM {$wpdb->prefix}iclt_urls_map");        
         include dirname(__FILE__).'/options_interface.php';
     }
     
@@ -420,6 +427,7 @@ class ICanLocalizeTBTranslate{
             $methods['ictl.processPostAfterSubmission'] = 'ICanLocalizeTBProcessPostAfterSubmission';
         }
         $methods['ictl.getCategoriesDest'] = 'ICanLocalizeTBGetCategories';
+        $methods['ictl.addUrlTranslation'] = 'ICanLocalizeAddUrlTranslation';        
         return $methods;
     }
     
@@ -474,15 +482,65 @@ class ICanLocalizeTBTranslate{
     }        
     
     function js_scripts(){
+        global $plugin_page;
         ?>
         <link rel="stylesheet" type="text/css" href="<?php echo ICLT_CT_PLUGIN_URL ?>/lib/popup.css" />
         <script src="<?php echo ICLT_CT_PLUGIN_URL ?>/lib/popup.js" type="text/javascript"></script>
         <script type="text/javascript">
             poparr_src_url  = '<?php echo ICLT_CT_PLUGIN_URL ?>/img';
             onload = getElementsWithTitles;            
+        </script>        
+        <?php if($plugin_page=='iclttc'): ?>
+        <script type="text/javascript">
+            jQuery(document).ready( function(){
+                jQuery('#iclt_links_fixer').click(iclt_fix_translated_links);
+            });
+            
+            function iclt_fix_translated_links(){
+                jthis = jQuery(this);
+                jthis.attr('value','<?php printf(__('Running: %02.2f %%'),0) ?>');
+                jQuery.ajax({
+                    type: "POST",
+                    url: "<?php echo $_SERVER['REQUEST_URI'] ?>",
+                    data: "iclttc_ajx_action=fix_links",
+                    success: function(msg){
+                        spl = msg.split('|');         
+                        if(spl[0] > 0){
+                            jthis.attr('value', spl[1]);
+                            window.setTimeout(iclt_fix_translated_links,3000);
+                        }else{
+                            jthis.attr('value', '<?php echo __('Start') ?>');
+                        }                        
+                    }                    
+                });                
+            }        
         </script>
-        
+        <?php endif; ?>
         <?php
+    }
+    
+    function ajax_actions($action){
+        global $wpdb;
+        switch($action){
+            case 'fix_links':
+                $all_posts = $wpdb->get_var("SELECT COUNT(*) FROM {$wpdb->posts} WHERE post_type IN ('post','page')");
+                $post = $wpdb->get_row("
+                    SELECT SQL_CALC_FOUND_ROWS ID, post_content FROM {$wpdb->posts} 
+                    WHERE post_type IN ('post','page') AND ID NOT IN 
+                    (SELECT post_id FROM {$wpdb->postmeta} WHERE meta_key='_iclt_all_urls_translated')                
+                ");  
+                if(!$post){
+                    echo '0|0';                    
+                }else{              
+                    $posts_left = $wpdb->get_var("SELECT FOUND_ROWS()") - 1;                
+                    add_post_meta($post->ID,'_iclt_all_urls_translated',1);
+                    $left_proc = round((1 - $posts_left/$all_posts)*100,2);
+                    echo $posts_left . '|';
+                    printf(__('Running: %02.2f %%'),$left_proc);
+                }
+                break;
+            default: echo '';
+        }
     }
     
 }
@@ -522,10 +580,5 @@ function iclt_comments_translator_activate(){
     add_option('iclt_tb_version',ICLT_TB_CURRENT_VERSION,'',true);
     
 }
-
-
-
-
-
 
 ?>

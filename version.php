@@ -1,3 +1,3 @@
 <?php
-define('ICLT_TB_CURRENT_VERSION', '1.0');  
+define('ICLT_TB_CURRENT_VERSION', '1.1');  
 ?>

@@ -60,7 +60,17 @@
     </table>
     
     <p class="submit">    
-    <input class="button" type="submit" value="Save Changes" name="Submit"/>
+    <input class="button" type="submit" value="<?php echo __('Save Changes') ?>" name="Submit"/>
     </p>
     </form>
+    
+    <div>
+        <p><b><?php echo __('Links translation')?>:</b></p>
+        <p><?php echo __('Check for links to the original blog and replace them with the corresponding links in the current blog'); ?></p>
+        <p> 
+            <?php echo sprintf(__('%s urls in the urls map table'), $links_map_size)?> 
+            <input id="iclt_links_fixer" class="button" type="button" value="<?php echo __('Start') ?>" 
+                <?php if(!$links_map_size):?>disabled="disabled"<?php endif ?> />
+        </p>
+    </div>
 </div>
