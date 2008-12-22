@@ -269,7 +269,10 @@ function ICanLocalizeAddUrlTranslation($args){
     // check for posts using this link from the original blog and language
     // look for WP (pretty) urls)
     $mposts = $wpdb->get_results("SELECT ID, post_content FROM {$wpdb->posts} 
-        WHERE post_content LIKE '%{$original_permalink}%' AND post_type IN ('post','page')");                
+        WHERE post_content LIKE '%{$original_permalink}%' AND post_type IN ('post','page')
+        AND ID NOT IN 
+        (SELECT post_id FROM {$wpdb->postmeta} WHERE meta_key='_iclt_all_urls_translated')                        
+        ");                
     foreach($mposts as $p){
         $found_post_language = get_post_meta($p->ID, '_ican_language', true);            
         if($found_post_language!=$translated_language){
@@ -284,7 +287,10 @@ function ICanLocalizeAddUrlTranslation($args){
     // check for posts using this link from the original blog and language
     // look for absolute urls
     $mposts = $wpdb->get_results("SELECT ID, post_content FROM {$wpdb->posts} 
-        WHERE post_content LIKE '%{$original_permalink_absolute}%' AND post_type IN ('post','page')");                
+        WHERE post_content LIKE '%{$original_permalink_absolute}%' AND post_type IN ('post','page')
+        AND ID NOT IN 
+        (SELECT post_id FROM {$wpdb->postmeta} WHERE meta_key='_iclt_all_urls_translated')                
+        ");                
     foreach($mposts as $p){
         $found_post_language = get_post_meta($p->ID, '_ican_language', true);            
         if($found_post_language!=$translated_language){
