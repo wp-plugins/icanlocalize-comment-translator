@@ -96,7 +96,7 @@ function ICanLocalizeSetLanguagesInfoDest($args){
         if($document_type=='page'){
             $original_permalink_absolute = $original_blog_home . '/?page_id=' . $original_id;
         }else{
-            $original_permalink_absolute = $original_blog_home . '/?p' . $original_id;
+            $original_permalink_absolute = $original_blog_home . '/?p=' . $original_id;
         }
         
         $parts = parse_url(get_option('home'));
@@ -238,7 +238,7 @@ function ICanLocalizeAddUrlTranslation($args){
     if($document_type=='page'){
         $original_permalink_absolute = $original_blog_home . '/?page_id=' . $original_id;
     }else{
-        $original_permalink_absolute = $original_blog_home . '/?p' . $original_id;
+        $original_permalink_absolute = $original_blog_home . '/?p=' . $original_id;
     }
     
     // add/update details in the urls map table
