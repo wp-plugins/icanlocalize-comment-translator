@@ -10,7 +10,11 @@
     <?php endif; ?>
     
     <table class="form-table">
-        <tbody>
+        <tbody>        
+            <tr valign="top">
+                <th scope="row">&nbsp;</th>
+                <td>Need help? Visit <a href="http://design.icanlocalize.com/wordpress-translation/using-icanlocalize-translator/">ICanLocalize Translation Getting Started Guide</a>.</td>
+            </tr>            
             <tr valign="top">
                 <th scope="row"><?php echo __('Site ID') ?></th>
                 <td><input id="iclt_site_id" name="iclt_site_id" class="code" type="text" size="20" value="<?php echo $this->site_id ?>" /></td>
