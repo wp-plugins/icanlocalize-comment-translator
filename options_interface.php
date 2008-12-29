@@ -1,5 +1,5 @@
 <div class="wrap">
-    <h2>ICanLocalize Settings</h2>
+    <h2><img src="<?php echo ICLT_CT_PLUGIN_URL ?>/img/32_trans.png" height="32" width="32" alt="Icon" align="left" style="margin-right:6px;" /><?php echo __('ICanLocalize Comment Translator Settings') ?></h2> 
     <form action="" method="post">
     <?php wp_nonce_field('update-incalocalize-comments') ?>
     
@@ -13,7 +13,11 @@
         <tbody>        
             <tr valign="top">
                 <th scope="row">&nbsp;</th>
-                <td>Need help? Visit <a href="http://design.icanlocalize.com/wordpress-translation/using-icanlocalize-translator/">ICanLocalize Translation Getting Started Guide</a>.</td>
+                <td>
+                    <div style="background:url(<?php echo ICLT_CT_PLUGIN_URL ?>/img/<?php echo $help_icon_image ?>);background-repeat:no-repeat;padding:4px 4px 4px 32px;border:solid 1px #eee;float:left;background-position:4px 4px;height:24px;<?php echo $help_bg_style ?>">
+                    <?php echo __('Need help? Visit'); ?> <a href="http://design.icanlocalize.com/wordpress-translation/using-icanlocalize-translator/">ICanLocalize Translation Getting Started Guide</a>.
+                    </div>
+                </td>
             </tr>            
             <tr valign="top">
                 <th scope="row"><?php echo __('Site ID') ?></th>

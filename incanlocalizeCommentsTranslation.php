@@ -121,6 +121,13 @@ class ICanLocalizeTBTranslate{
     function management_page_content(){
         global $wpdb;
         $links_map_size = $wpdb->get_var("SELECT COUNT(*) FROM {$wpdb->prefix}iclt_urls_map");        
+        if($_GET['iclt_error']){
+            $help_icon_image = 'RO-Mx1-24_circle-red-i.png';
+            $help_bg_style = ';background-color:#ffd3d3;';
+        }else{
+            $help_icon_image = 'RO-Mx1-24_circle-help-1.png';
+            $help_bg_style = '';            
+        }        
         include dirname(__FILE__).'/options_interface.php';
     }
     
