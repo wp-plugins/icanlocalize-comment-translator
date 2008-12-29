@@ -99,8 +99,8 @@ function ICanLocalizeSetLanguagesInfoDest($args){
             $original_permalink_absolute = $original_blog_home . '/?p=' . $original_id;
         }
         
-        $parts = parse_url(get_option('home'));
-        $blog_path = trim($parts['path'],'/');
+        //$parts = parse_url(get_option('home'));
+        //$blog_path = trim($parts['path'],'/');
                
         delete_post_meta($post_id,'_iclt_all_urls_translated');
                
@@ -111,8 +111,8 @@ function ICanLocalizeSetLanguagesInfoDest($args){
             $not_found = 0;
             foreach($matches[2] as $m){                                
                 $orig_url =  $original_blog_home . $m;
-                if(preg_match('#/\?page_id=([0-9]+)#i',$m,$mtch)){                    
-                    $orig_id=$mtch[1];                    
+                if(preg_match('#/\?(page_id|p)=([0-9]+)#i',$m,$mtch)){                    
+                    $orig_id=$mtch[2];                    
                     $found_in_map_id = $wpdb->get_var("SELECT translated_id FROM {$wpdb->prefix}iclt_urls_map 
                         WHERE post_id='{$orig_id}' AND language='{$translated_language}'");
                     if(!$found_in_map_id){
