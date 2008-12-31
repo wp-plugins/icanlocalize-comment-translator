@@ -3,7 +3,7 @@ Contributors: ICanLocalize
 Tags: i18n, translation, localization, language, multilingual
 Requires at least: 2.6
 Tested up to: 2.7
-Stable tag: 1.1
+Stable tag: 1.2
 
 Manages human translated blogs and allows you to administrate, create contents and moderate comments in your native language.
 
@@ -73,3 +73,6 @@ All linking information between the contents in different languages is simply st
 	* First public release
 * Version 1.0
     * Bug fixes
+* Version 1.2
+    * Auto adjusts links to translated pages and posts.
+    * Added online 'getting started' guide.
