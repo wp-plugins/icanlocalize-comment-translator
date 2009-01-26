@@ -40,4 +40,71 @@ if(!function_exists('show_translation_links')){
     }  
     
 }
+
+if(!function_exists('iclt_language_selector')){ 
+    function iclt_language_selector($lang_array){
+        global $wp_query;            
+        $id = $wp_query->post->ID;
+        if($id && (is_page() || is_single())){
+            $post_language = get_post_meta($id,'_ican_language',true);
+            $link_info_for_language = get_post_meta($id,'_ican_link_info_for_language',true);        
+        }
+    
+        $iclt_settings = get_option('iclt_settings');
+        $blog_language = $iclt_settings['iclt_blog_language'];
+        //$blog_lan
+    
+        $k = 0;
+        $sel_langs = array();
+        foreach($lang_array as $language_name_en=>$default_url){
+            $k++;
+            if(isset($link_info_for_language[$language_name_en])){
+                $sel_langs[$k] = array('name'=>$link_info_for_language[$language_name_en]['display_language'], 'url'=>$link_info_for_language[$language_name_en]['permlink']);
+                if($link_info_for_language[$language_name_en]['english_name'] == $post_language){
+                    $cur_lang = $k;            
+                }
+            }else{
+                $sel_langs[$k] = array('name'=>$language_name_en, 'url'=>$default_url);
+                if($language_name_en == $post_language || $language_name_en == $blog_language){
+                    $cur_lang = $k;            
+                }        
+            }
+        }
+        ?>
+        <ul id="lang_sel">
+            <li><span><?php echo $sel_langs[$cur_lang]['name']?></span>
+                <ul>
+                    <?php foreach($sel_langs as $k=>$default_url): if($k==$cur_lang) continue; ?>
+                    <li><a href="<?php echo $sel_langs[$k]['url']?>" ><?php echo $sel_langs[$k]['name']?></a></li>
+                    <?php endforeach; ?>
+                </ul>
+            </li>
+        </ul>    
+        <?php    
+    }
+    
+    function iclt_lang_sel_nav_css($show = true){
+        //make it MU and WP compatible   
+        $plugins_folder = basename(dirname(dirname(dirname(__FILE__))));
+        $link_tag = '<link rel="stylesheet" href="'. get_option('home') . '/wp-content/' . $plugins_folder . '/'. 
+            basename(dirname(dirname(__FILE__))) . '/css/language_selector.css?ver=1" type="text/css" media="all" />';
+        if(!$show){
+            return $link_tag;
+        }else{
+            echo $link_tag;
+        }
+    }
+    
+    add_action('init','iclt_lang_sel_nav_ob_start');
+    function iclt_lang_sel_nav_ob_start(){
+        ob_start('iclt_lang_sel_nav_prepend_css');
+    }
+    add_action('wp_head','iclt_lang_sel_nav_ob_end');
+    function iclt_lang_sel_nav_ob_end(){
+        ob_end_flush();
+    }
+    function iclt_lang_sel_nav_prepend_css($buf){
+        return preg_replace('#</title>#i','</title>' . PHP_EOL . PHP_EOL . iclt_lang_sel_nav_css(false), $buf);
+    }    
+}
 ?>
