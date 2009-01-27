@@ -1,53 +1,37 @@
-#lang_sel, #lang_sel ul {
-    padding: 0;
-    margin: 0;
-    list-style: none;    
-    z-index: 999;   
-}
-#lang_sel span{
-    background-color: #CCE6FF;
-    display: block;
-    padding: 6px;
-    cursor: default;
-}
-#lang_sel a{
-    background-color: #CCE6FF;
-    color: #000;
-    display: block;
-    text-decoration: none;
-    padding: 6px;
-}
-#lang_sel li {
-    float: left;
-    width: 12em;
-}
-#lang_sel li {position: relative;}
-/* hide from IE mac \*/
-#lang_sel li {position: static; width: auto;}
-/* end hiding from IE5 mac */
-#lang_sel li ul, #lang_sel ul li  {
-    width: 12em;
-}
-#lang_sel li ul {
-    position: absolute;
-    display: none;
-    background-color: #CCE6FF;
-    border-right: 1px solid #333333;
-    border-bottom: 1px solid #333333;
-}
-#lang_sel li:hover a, #lang_sel a:focus,
-#lang_sel a:active {
-    color: #000000;
-    background-color: #ccc;
-}
-#lang_sel li:hover ul {
-    display: block;
-}
-#lang_sel li:hover ul a {
-    color: #000000;
-    background-color: transparent;
-}
-#lang_sel ul a:hover{
-    background-color: #444 !important;
-    color: #fff !important;
-}
+#lang_sel {height:32px; position:relative; z-index:100;  font-family:arial, sans-serif;}
+/* hack to correct IE5.5 faulty box model */
+* html #lang_sel {width:12em; w\idth:12em;}
+/* remove all the bullets, borders and padding from the default list styling */
+#lang_sel ul {padding:0;margin:0;list-style-type:none;}
+#lang_sel ul ul {width:149px;}
+/* float the list to make it horizontal and a relative positon so that you can control the dropdown menu positon */
+#lang_sel li {float:left;width:149px;position:relative;}
+/* style the links for the top level */
+#lang_sel a, #lang_sel a:visited {display:block;font-size:12px;text-decoration:none; color:#fff; border:1px solid #000; background:#09c; padding-left:10px; line-height:18px;}
+/* a hack so that IE5.5 faulty box model is corrected */
+* html #lang_sel a, * html #lang_sel a:visited {width:149px; w\idth:138px;}
+
+/* hide the sub levels and give them a positon absolute so that they take up no room */
+#lang_sel ul ul {visibility:hidden;position:absolute;height:0;top:19px;left:0; width:149px;border-top:1px solid #000;}
+/* another hack for IE5.5 */
+* html #lang_sel ul ul {top:18px;t\op:19px;}
+
+/* style the table so that it takes no ppart in the layout - required for IE to work */
+#lang_sel table {position:absolute; top:0; left:0; border-collapse:collapse;;}
+
+/* style the second level links */
+#lang_sel ul ul a, #lang_sel ul ul a:visited {background:#eee; color:#000; height:auto; line-height:1em; padding:3px 10px;border-width:0 1px 1px 1px;}
+/* yet another hack for IE5.5 */
+* html #lang_sel ul ul a, * html #lang_sel ul ul a:visited {width:150px;w\idth:128px;}
+
+/* style the top level hover */
+#lang_sel a:hover, #lang_sel ul ul a:hover{color:#000; background:#ccc;}
+#lang_sel :hover > a, #lang_sel ul ul :hover > a {color:#000; background:#ccc;}
+
+/* make the second level visible when hover on first level list OR link */
+#lang_sel ul li:hover ul,
+#lang_sel ul a:hover ul{visibility:visible; }
+/* keep the third level hidden when you hover on first level list OR link */
+#lang_sel ul :hover ul ul{visibility:hidden;}
+/* make the third level visible when you hover over second level list OR link */
+#lang_sel ul :hover ul :hover ul{ visibility:visible;}

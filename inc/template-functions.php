@@ -71,15 +71,19 @@ if(!function_exists('iclt_language_selector')){
             }
         }
         ?>
-        <ul id="lang_sel">
-            <li><span><?php echo $sel_langs[$cur_lang]['name']?></span>
-                <ul>
-                    <?php foreach($sel_langs as $k=>$default_url): if($k==$cur_lang) continue; ?>
-                    <li><a href="<?php echo $sel_langs[$k]['url']?>" ><?php echo $sel_langs[$k]['name']?></a></li>
-                    <?php endforeach; ?>
-                </ul>
-            </li>
-        </ul>    
+        <div id="lang_sel">
+            <ul>
+                <li><a href="#"><?php echo $sel_langs[$cur_lang]['name']?><!--[if IE 7]><!--></a><!--<![endif]-->
+                    <!--[if lte IE 6]><table><tr><td><![endif]-->
+                    <ul>
+                        <?php foreach($sel_langs as $k=>$default_url): if($k==$cur_lang) continue; ?>
+                        <li><a href="<?php echo $sel_langs[$k]['url']?>"><?php echo $sel_langs[$k]['name']?></a></li>
+                        <?php endforeach; ?>
+                    </ul>
+                    <!--[if lte IE 6]></td></tr></table></a><![endif]-->
+                </li>
+            </ul>    
+        </div>
         <?php    
     }
     
@@ -101,7 +105,7 @@ if(!function_exists('iclt_language_selector')){
     }
     add_action('wp_head','iclt_lang_sel_nav_ob_end');
     function iclt_lang_sel_nav_ob_end(){
-        ob_end_flush();
+        ob_end_flush();             
     }
     function iclt_lang_sel_nav_prepend_css($buf){
         return preg_replace('#</title>#i','</title>' . PHP_EOL . PHP_EOL . iclt_lang_sel_nav_css(false), $buf);
