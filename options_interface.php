@@ -8,7 +8,6 @@
     <p><b><?php echo __('Error') ?>:</b> <?php echo $e ?></p>
     </div>    
     <?php endif; ?>
-    
     <table class="form-table">
         <tbody>        
             <tr valign="top">
@@ -58,7 +57,19 @@
                     <?php endforeach; ?>
                     </table>
                 </td>
-            </tr>              
+            </tr>           
+            <?php if($blog_langs): ?>   
+            <tr valign="top">
+                <th scope="row"><?php echo __('Select blog language') ?></th>
+                <td>
+                    <select name="blog_language">
+                        <?php foreach($blog_langs as $b): ?>
+                        <option value="<?php echo $b ?>" <?php if($b == $blog_lang): ?>selected="selected"<?php endif?>><?php echo $b ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                </td>
+            </tr>                 
+            <?php endif; ?>           
             <tr valign="top">
                 <th scope="row"><?php echo __('Plugin version') ?></th>
                 <td><?php echo get_option('iclt_tb_version') ?></td>

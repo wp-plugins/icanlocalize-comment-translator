@@ -127,7 +127,25 @@ class ICanLocalizeTBTranslate{
         }else{
             $help_icon_image = 'RO-Mx1-24_circle-help-1.png';
             $help_bg_style = '';            
-        }        
+        }   
+        // try to determine whether the main translation plugin is installed and blog language defined
+        if(!defined('ICLT_CURRENT_VERSION')){
+            $blog_lang = get_option('iclt_tb_blog_language');
+            $res = $wpdb->get_results("SELECT DISTINCT meta_value FROM {$wpdb->postmeta} WHERE meta_key='_ican_language'");
+            $default_lang = $r[0]->meta_value; 
+            foreach($res as $r){                
+                $post_id = $wpdb->get_var("SELECT post_id FROM {$wpdb->postmeta} WHERE meta_key='_ican_language' AND meta_value='".$wpdb->escape($r->meta_value)."' LIMIT 1");
+                $has_from = $wpdb->get_var("SELECT meta_id FROM {$wpdb->postmeta} WHERE post_id={$post_id} AND meta_key='_ican_from_language'");
+                if(!$has_from){
+                    $default_lang = $r->meta_value; 
+                }
+                $blog_langs[] = $r->meta_value;
+            }
+            if(!$blog_lang){
+                update_option('iclt_tb_blog_language', $default_lang);
+                $blog_lang = $default_lang;
+            }
+        }    
         include dirname(__FILE__).'/options_interface.php';
     }
     
@@ -147,6 +165,10 @@ class ICanLocalizeTBTranslate{
         $iclt_settings['access_key'] = mysql_real_escape_string($this->access_key);
         $iclt_settings['valid'] = $this->valid;
         update_option('iclt_tb_settings',$iclt_settings);                
+        
+        if($_POST['blog_language']){
+            update_option('iclt_tb_blog_language', $_POST['blog_language']);
+        }
         
         //update user settings
         global $userdata, $wpdb;

@@ -44,6 +44,25 @@ if(!function_exists('show_translation_links')){
 if(!function_exists('iclt_language_selector')){ 
     function iclt_language_selector($lang_array){
         global $wp_query;            
+        
+        $fh = fopen(dirname(__FILE__) . '/languages.csv', 'r');
+        $idx = 0;
+        while($data = fgetcsv($fh)){
+            if($idx == 0){
+                foreach($data as $k=>$v){
+                    if($k < 3) continue;
+                    $lang_idxs[] = $v; 
+                }
+                
+            }else{
+                foreach($data as $k=>$v){
+                    if($k < 3) continue;
+                    $langs_names[$lang_idxs[$idx-1]][$lang_idxs[$k-3]] = $v; 
+                }
+            }
+            $idx++;
+        }
+        
         $id = $wp_query->post->ID;
         if($id && (is_page() || is_single())){
             $post_language = get_post_meta($id,'_ican_language',true);
@@ -51,20 +70,31 @@ if(!function_exists('iclt_language_selector')){
         }
     
         $iclt_settings = get_option('iclt_settings');
-        $blog_language = $iclt_settings['iclt_blog_language'];
-        //$blog_lan
-    
+        // try to determine whether the main translation plugin is installed and blog language defined
+        if(defined('ICLT_CURRENT_VERSION')){        
+            $blog_language = $iclt_settings['iclt_blog_language'];
+        }else{
+            $blog_language = get_option('iclt_tb_blog_language');
+        }
         $k = 0;
         $sel_langs = array();
         foreach($lang_array as $language_name_en=>$default_url){
             $k++;
             if(isset($link_info_for_language[$language_name_en])){
-                $sel_langs[$k] = array('name'=>$link_info_for_language[$language_name_en]['display_language'], 'url'=>$link_info_for_language[$language_name_en]['permlink']);
+                $sel_langs[$k] = array(
+                    'current_name'=> $langs_names[$language_name_en][$post_language], 
+                    'url'=>$link_info_for_language[$language_name_en]['permlink'],
+                    'native_name'=> $langs_names[$link_info_for_language[$language_name_en]['english_name']][$link_info_for_language[$language_name_en]['english_name']]
+                );
                 if($link_info_for_language[$language_name_en]['english_name'] == $post_language){
                     $cur_lang = $k;            
                 }
             }else{
-                $sel_langs[$k] = array('name'=>$language_name_en, 'url'=>$default_url);
+                $sel_langs[$k] = array(
+                    'current_name'=>$langs_names[$language_name_en][$blog_language],
+                    'url'=>$default_url,
+                    'native_name'=> $langs_names[$language_name_en][$language_name_en]
+                );
                 if($language_name_en == $post_language || $language_name_en == $blog_language){
                     $cur_lang = $k;            
                 }        
@@ -73,11 +103,11 @@ if(!function_exists('iclt_language_selector')){
         ?>
         <div id="lang_sel">
             <ul>
-                <li><a href="#"><?php echo $sel_langs[$cur_lang]['name']?><!--[if IE 7]><!--></a><!--<![endif]-->
+                <li><img src="<?php echo ICLT_CT_PLUGIN_URL ?>/img/nav-arrow-down.png" align="right" /><a href="#"><?php echo $sel_langs[$cur_lang]['native_name']?><!--[if IE 7]><!--></a><!--<![endif]-->
                     <!--[if lte IE 6]><table><tr><td><![endif]-->
                     <ul>
                         <?php foreach($sel_langs as $k=>$default_url): if($k==$cur_lang) continue; ?>
-                        <li><a href="<?php echo $sel_langs[$k]['url']?>"><?php echo $sel_langs[$k]['name']?></a></li>
+                        <li><a href="<?php echo $sel_langs[$k]['url']?>"><?php echo $sel_langs[$k]['native_name']?> (<?php echo $sel_langs[$k]['current_name'] ?>)</a></li>
                         <?php endforeach; ?>
                     </ul>
                     <!--[if lte IE 6]></td></tr></table></a><![endif]-->
