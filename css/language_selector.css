@@ -31,7 +31,3 @@
 /* make the second level visible when hover on first level list OR link */
 #lang_sel ul li:hover ul,
 #lang_sel ul a:hover ul{visibility:visible; }
-/* keep the third level hidden when you hover on first level list OR link */
-#lang_sel ul :hover ul ul{visibility:hidden;}
-/* make the third level visible when you hover over second level list OR link */
-#lang_sel ul :hover ul :hover ul{ visibility:visible;}

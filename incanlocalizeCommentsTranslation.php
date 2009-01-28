@@ -476,7 +476,8 @@ class ICanLocalizeTBTranslate{
         }
 
         if($c->error){
-            $_GET['iclt_error'] = __('Error: ') . $c->error.'<br />';
+            $_GET['iclt_error'] = __('Error: Connection to ICanLocalize is temporary not available. It should be 
+back in a few minutes') . '<br /><br />';
             $this->valid = false;
             return false;
         }        
