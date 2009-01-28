@@ -467,19 +467,21 @@ class ICanLocalizeTBTranslate{
         $de = ini_get('display_errors');
         ini_set('display_errors','off');
         $c = new Snoopy();
-        if($c->error){
-            $_GET['iclt_error'] = __('Error: ') . $c->error.'<br />';
-            $this->valid = false;
-            return false;
-        }
-        ini_set('display_errors',$de);
-        
+        $c->timed_out = 5;
         $url_parts = parse_url($request);
         $https = $url_parts['scheme']=='https';
         $c->fetch($request);            
         if((!$c->results || $c->timed_out) && $https){
             $c->fetch(str_replace('https://','http://',$request));  
-        }  
+        }
+
+        if($c->error){
+            $_GET['iclt_error'] = __('Error: ') . $c->error.'<br />';
+            $this->valid = false;
+            return false;
+        }        
+        
+        ini_set('display_errors',$de);  
         $res = xml2array($c->results);
         $this->valid = $res['info']['status']['attr']['err_code']==0;
     }

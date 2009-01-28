@@ -69,13 +69,21 @@ if(!function_exists('iclt_language_selector')){
             $link_info_for_language = get_post_meta($id,'_ican_link_info_for_language',true);        
         }
     
-        $iclt_settings = get_option('iclt_settings');
         // try to determine whether the main translation plugin is installed and blog language defined
-        if(defined('ICLT_CURRENT_VERSION')){        
+        $tp_installed = false;
+        foreach($GLOBALS['current_plugins'] as $cp){
+            if(preg_match('#/icanlocalize_translator\.php$#',$cp)){
+                $tp_installed = true;
+                break;
+            }
+        }
+        if($tp_installed){        
+            $iclt_settings = get_option('iclt_settings');
             $blog_language = $iclt_settings['iclt_blog_language'];
         }else{
             $blog_language = get_option('iclt_tb_blog_language');
         }
+        
         $k = 0;
         $sel_langs = array();
         foreach($lang_array as $language_name_en=>$default_url){
