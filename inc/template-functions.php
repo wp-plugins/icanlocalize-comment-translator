@@ -107,18 +107,23 @@ if(!function_exists('iclt_language_selector')){
                     $cur_lang = $k;            
                 }        
             }
+        }        
+        $user_agent = $_SERVER['HTTP_USER_AGENT'];
+        if(preg_match('#MSIE ([0-9]+)\.[0-9]#',$user_agent,$matches)){
+            $ie_ver = $matches[1];
         }
+        
         ?>
         <div id="lang_sel">
             <ul>
-                <li><img src="<?php echo ICLT_CT_PLUGIN_URL ?>/img/nav-arrow-down.png" align="right" /><a href="#"><?php echo $sel_langs[$cur_lang]['native_name']?><!--[if IE 7]><!--></a><!--<![endif]-->
-                    <!--[if lte IE 6]><table><tr><td><![endif]-->
+                <li><img src="<?php echo ICLT_CT_PLUGIN_URL ?>/img/nav-arrow-down.png" align="right" /><a href="javascript:;"><?php echo $sel_langs[$cur_lang]['native_name']?><?php if(!isset($ie_ver) || $ie_ver > 6): ?></a><?php endif; ?>
+                    <?php if(isset($ie_ver) && $ie_ver <= 6): ?><table><tr><td><?php endif ?>
                     <ul>
                         <?php foreach($sel_langs as $k=>$default_url): if($k==$cur_lang) continue; ?>
                         <li><a href="<?php echo $sel_langs[$k]['url']?>"><?php echo $sel_langs[$k]['native_name']?> (<?php echo $sel_langs[$k]['current_name'] ?>)</a></li>
                         <?php endforeach; ?>
                     </ul>
-                    <!--[if lte IE 6]></td></tr></table></a><![endif]-->
+                    <?php if(isset($ie_ver) && $ie_ver <= 6): ?></td></tr></table></a><?php endif ?> 
                 </li>
             </ul>    
         </div>
