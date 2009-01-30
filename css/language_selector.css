@@ -28,6 +28,10 @@
 #lang_sel a:hover, #lang_sel ul ul a:hover{color:#000; background:#ccc;}
 #lang_sel :hover > a, #lang_sel ul ul :hover > a {color:#000; background:#ccc;}
 
+#lang_sel a.lang_sel_sel{
+    background:url(../img/nav-arrow-down.png) #09c right no-repeat;
+}
+
 /* make the second level visible when hover on first level list OR link */
 #lang_sel ul li:hover ul,
 #lang_sel ul a:hover ul{visibility:visible; }

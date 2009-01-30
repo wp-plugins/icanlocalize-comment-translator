@@ -116,7 +116,7 @@ if(!function_exists('iclt_language_selector')){
         ?>
         <div id="lang_sel">
             <ul>
-                <li><img src="<?php echo ICLT_CT_PLUGIN_URL ?>/img/nav-arrow-down.png" align="right" alt="select language" /><a href="javascript:;"><?php echo $sel_langs[$cur_lang]['native_name']?><?php if(!isset($ie_ver) || $ie_ver > 6): ?></a><?php endif; ?>
+                <li><a href="#" class="lang_sel_sel"><?php echo $sel_langs[$cur_lang]['native_name']?><?php if(!isset($ie_ver) || $ie_ver > 6): ?></a><?php endif; ?>
                     <?php if(isset($ie_ver) && $ie_ver <= 6): ?><table><tr><td><?php endif ?>
                     <ul>
                         <?php foreach($sel_langs as $k=>$default_url): if($k==$cur_lang) continue; ?>
