@@ -76,3 +76,5 @@ All linking information between the contents in different languages is simply st
 * Version 1.2
     * Auto adjusts links to translated pages and posts.
     * Added online 'getting started' guide.
+* Version 1.3
+    * Includes drop down language switcher that can be added to header.php.
