@@ -5,7 +5,7 @@ Plugin URI: http://sitepress.org/wordpress-translation/
 Description: Receives professionally translated posts and pages from ICanLocalize's translation system and allows comment moderation in your language. To configure the plugin, you'll need an setup an account at <a href="http://www.icanlocalize.com">www.icanlocalize.com</a>. <a href="options-general.php?page=iclttc">Configure &raquo;</a>.
 Author: ICanLocalize
 Author URI: http://www.icanlocalize.com
-Version: 1.3
+Version: 1.3.1
 */
 
 /*
@@ -512,6 +512,23 @@ back in a few minutes') . '<br /><br />';
             return $results['info']['result']['attr']['id'];
         }                      
     }        
+    
+    function get_languages(){
+        require_once(ABSPATH . '/wp-includes/class-snoopy.php');
+        $request =  ICL_API_ENDOINT . 'websites/' . $this->site_id . '.xml?accesskey=' . $this->access_key;
+        $c = new Snoopy();
+        $url_parts = parse_url($request);
+        $https = $url_parts['scheme']=='https';
+        $c->fetch($request);            
+        if((!$c->results || $c->timed_out) && $https){
+            $c->fetch(str_replace('https://','http://',$request));  
+        }
+        $res = xml2array($c->results);
+        
+        $languages = $res['info']['website']['translation_languages'];
+        
+        return $res;
+    }
     
     function js_scripts(){
         global $plugin_page;

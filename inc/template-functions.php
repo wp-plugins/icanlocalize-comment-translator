@@ -134,7 +134,7 @@ if(!function_exists('iclt_language_selector')){
         //make it MU and WP compatible   
         $plugins_folder = basename(dirname(dirname(dirname(__FILE__))));
         $link_tag = '<link rel="stylesheet" href="'. get_option('home') . '/wp-content/' . $plugins_folder . '/'. 
-            basename(dirname(dirname(__FILE__))) . '/css/language_selector.css?ver=1" type="text/css" media="all" />';
+            basename(dirname(dirname(__FILE__))) . '/css/language_selector.css?ver=2" type="text/css" media="all" />';
         if(!$show){
             return $link_tag;
         }else{
@@ -154,4 +154,25 @@ if(!function_exists('iclt_language_selector')){
         return preg_replace('#</title>#i','</title>' . PHP_EOL . PHP_EOL . iclt_lang_sel_nav_css(false), $buf);
     }    
 }
+/*
+function language_selector_widget_control(){
+    global $icltc; 
+    require_once(ABSPATH . '/wp-includes/class-snoopy.php');
+    echo '<pre>';
+    print_r($icltc->get_languages()); 
+}
+
+function language_selector_widget_init(){
+    function language_selector_widget(){
+        echo $before_widget;
+        echo $before_title;
+        
+        var_dump($icltc);
+        iclt_language_selector() ;        
+    }
+    wp_register_sidebar_widget('languages_selector', __('Language Selector'), 'language_selector_widget');
+    wp_register_widget_control('languages_selector', __('Language Selector'), 'language_selector_widget_control' ); 
+}
+add_action('plugins_loaded', 'language_selector_widget_init');
+*/
 ?>
