@@ -1,8 +1,8 @@
-#lang_sel {height:32px; position:relative; z-index:100;  font-family:arial, sans-serif;}
+#lang_sel {height:32px; position:relative; z-index:99;  font-family:arial, sans-serif;}
 /* hack to correct IE5.5 faulty box model */
 * html #lang_sel {width:12em; w\idth:12em;}
 /* remove all the bullets, borders and padding from the default list styling */
-#lang_sel ul {padding:0;margin:0;list-style-type:none;}
+#lang_sel ul, #lang_sel li {padding:0;margin:0;list-style-type:none;}
 #lang_sel ul ul {width:149px;}
 /* float the list to make it horizontal and a relative positon so that you can control the dropdown menu positon */
 #lang_sel li {float:left;width:149px;position:relative;}
