@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: ICanLocalize Comment Translator
-Plugin URI: http://design.icanlocalize.com/wordpress-translation/
+Plugin URI: http://sitepress.org/wordpress-translation/
 Description: Receives professionally translated posts and pages from ICanLocalize's translation system and allows comment moderation in your language. To configure the plugin, you'll need an setup an account at <a href="http://www.icanlocalize.com">www.icanlocalize.com</a>. <a href="options-general.php?page=iclttc">Configure &raquo;</a>.
 Author: ICanLocalize
 Author URI: http://www.icanlocalize.com

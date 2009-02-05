@@ -1,6 +1,6 @@
 === ICanLocalize Comment Translator ===
 Contributors: ICanLocalize
-Tags: i18n, translation, localization, language, multilingual
+Tags: i18n, translation, localization, language, multilingual, SitePress
 Requires at least: 2.6
 Tested up to: 2.7
 Stable tag: 1.3
@@ -27,6 +27,9 @@ Your visitors will see everything in their language and you see everything in yo
 
 [Our own blog](http://blog-en.icanlocalize.com) is being translated by our system from English to French.
 You're invited to [contact us](http://www.icanlocalize.com/web_dialogs/new?language_id=1&store=4) for other examples.
+
+= SitePress =
+This plugin is part of [SitePress](http://sitepress.org) - a collection of plugins that turn WordPress into a fully featured multilingual content management system.
 
 == Installation ==
 
@@ -67,14 +70,20 @@ This plugin will not handle your theme localization - but we can certainly help 
 Absolutely not. It doesn't change the default WordPress tables. Instead, this plugin will create new contents in different blogs, where the translations will be kept.
 All linking information between the contents in different languages is simply stored as custom fields.
 
+= How do I add language selectors between the translated and original language blog? =
+Follow these instructions for [adding language selectors](http://sitepress.org/wordpress-translation/automatic-links-between-original-and-translations/).
+You can add a drop down language selector in header.php or a list of available languages at the beginning or end of each post/page.
+
 == Version History ==
 
 * Version 0.2
 	* First public release
 * Version 1.0
-    * Bug fixes
+	* Bug fixes
 * Version 1.2
-    * Auto adjusts links to translated pages and posts.
-    * Added online 'getting started' guide.
+	* Auto adjusts links to translated pages and posts.
+	* Added online 'getting started' guide.
 * Version 1.3
-    * Includes drop down language switcher that can be added to header.php.
+	* Includes drop down language switcher that can be added to header.php.
+* Version 1.3.1
+	* Dropdown language selector now support IE6
