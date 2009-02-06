@@ -513,7 +513,7 @@ back in a few minutes') . '<br /><br />';
         }                      
     }        
     
-    function get_languages(){
+    function get_website_info(){
         require_once(ABSPATH . '/wp-includes/class-snoopy.php');
         $request =  ICL_API_ENDOINT . 'websites/' . $this->site_id . '.xml?accesskey=' . $this->access_key;
         $c = new Snoopy();
@@ -524,9 +524,6 @@ back in a few minutes') . '<br /><br />';
             $c->fetch(str_replace('https://','http://',$request));  
         }
         $res = xml2array($c->results);
-        
-        $languages = $res['info']['website']['translation_languages'];
-        
         return $res;
     }
     

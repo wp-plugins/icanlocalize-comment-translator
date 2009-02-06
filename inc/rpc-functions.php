@@ -60,7 +60,7 @@ function ICanLocalizeTBProcessPostAfterSubmission(){
     require dirname(dirname(__FILE__)) . '/lib/xml2array.php';
     require_once ABSPATH .  '/wp-includes/class-IXR.php'; 
     $icltc = new ICanLocalizeTBTranslate();
-    $langs = $icltc->get_languages();
+    $langs = $icltc->get_website_info();
     $source = $langs['info']['website']['attr'];
     $url_parts = parse_url($source['url']);
     
