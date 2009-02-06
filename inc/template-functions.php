@@ -154,25 +154,70 @@ if(!function_exists('iclt_language_selector')){
         return preg_replace('#</title>#i','</title>' . PHP_EOL . PHP_EOL . iclt_lang_sel_nav_css(false), $buf);
     }    
 }
-/*
+
 function language_selector_widget_control(){
-    global $icltc; 
+    global $icltc, $wpdb; 
+    $all_checked = false;
+    
+    
+    if ( isset($_POST['language-selector-submit']) ) {
+        foreach($_POST['language_selector_options'] as $p){
+            $exp = explode('@SEP@',$p);
+            $language_selector_options[$exp[0]] = $exp[1];
+        }        
+        update_option('iclt_language_selector_options', $language_selector_options);
+    }else{
+        $language_selector_options = $wpdb->get_var("SELECT option_value FROM {$wpdb->options} WHERE option_name='iclt_language_selector_options'");
+        if(is_null($language_selector_options) || -1 == $language_selector_options){
+            add_option('iclt_language_selector_options',-1,0,1);
+            $all_checked = true;
+        }else{
+            $language_selector_options = maybe_unserialize($language_selector_options);
+        }
+    }    
+    
     require_once(ABSPATH . '/wp-includes/class-snoopy.php');
-    echo '<pre>';
-    print_r($icltc->get_languages()); 
+    $website_info = $icltc->get_website_info(); 
+    
+    $source_url = $website_info['info']['website']['attr']['url'];
+    
+    $languages = $website_info['info']['website']['translation_languages'];
+    if(isset($languages['translation_language'][0])){
+        $langs = $languages['translation_language'];
+    }else{
+        $langs[0] = $languages['translation_language'];
+    }
+    foreach($langs as $l){
+        $blog_langs[$l['attr']['from_language_name']] = $source_url;
+        $blog_langs[$l['attr']['to_language_name']] = $l['attr']['url'];
+    }
+
+    foreach($blog_langs as $name=>$url){
+        if($all_checked || in_array($name, array_keys((array)$language_selector_options))){
+            $checked = 'checked="ckeched"';
+        }else{
+            $checked = '';
+        }        
+        ?><label><input type="checkbox" name="language_selector_options[]" value="<?php echo $name . '@SEP@' . $url ?>" <?php echo $checked ?> />&nbsp;<?php
+        echo $name . ' [' . $url . ']</label><br />';
+    }
+    ?>
+    <input id="language-selector-submit" type="hidden" value="1" name="language-selector-submit"/>
+    <?php
 }
 
 function language_selector_widget_init(){
     function language_selector_widget(){
         echo $before_widget;
         echo $before_title;
-        
-        var_dump($icltc);
-        iclt_language_selector() ;        
+        $language_selector_options = get_option('iclt_language_selector_options');
+        if($language_selector_options){
+            iclt_language_selector($language_selector_options);        
+        }
     }
     wp_register_sidebar_widget('languages_selector', __('Language Selector'), 'language_selector_widget');
     wp_register_widget_control('languages_selector', __('Language Selector'), 'language_selector_widget_control' ); 
 }
 add_action('plugins_loaded', 'language_selector_widget_init');
-*/
+
 ?>
