@@ -79,7 +79,7 @@ function ICanLocalizeTBProcessPostAfterSubmission($args){
     
     if (!user_pass_ok($user_login, $user_pass)) {         
         return array('err_code'=>2, 'err_str'=>sprintf( __( 'ERROR - user or password don’t match')));
-    }        
+    }
 
     // refresh pages order
     global $wpdb;
@@ -87,6 +87,7 @@ function ICanLocalizeTBProcessPostAfterSubmission($args){
     require_once ABSPATH .  '/wp-includes/class-IXR.php'; 
     $icltc = new ICanLocalizeTBTranslate();
     $langs = $icltc->get_website_info();
+
     $source = $langs['info']['website']['attr'];
     // DISABLE WHEN THE DESTINATION BLOG IS THE SAME WITH THE SOURCE
     if(rtrim($source,'/')==get_option('home')){
@@ -113,6 +114,7 @@ function ICanLocalizeTBProcessPostAfterSubmission($args){
         $tmp[] = "'" . $p . "'";
         $page_order_values[$p] = $k;
     }
+        
     $pages_ordered_list = join(',',$tmp);
     
     $ids_map = $wpdb->get_results("SELECT post_id, translated_id FROM {$wpdb->prefix}iclt_urls_map WHERE post_id IN ({$pages_ordered_list})");
@@ -122,7 +124,8 @@ function ICanLocalizeTBProcessPostAfterSubmission($args){
     }
     
     return array('err_code'=>0, 'err_str'=>__('Page order refreshed'));
-}  
+}
+ 
 function ICanLocalizeSetLanguagesInfoDest($args){
         global $wpdb;
         
