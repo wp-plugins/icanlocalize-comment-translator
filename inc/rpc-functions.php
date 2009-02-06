@@ -88,6 +88,10 @@ function ICanLocalizeTBProcessPostAfterSubmission($args){
     $icltc = new ICanLocalizeTBTranslate();
     $langs = $icltc->get_website_info();
     $source = $langs['info']['website']['attr'];
+    // DISABLE WHEN THE DESTINATION BLOG IS THE SAME WITH THE SOURCE
+    if(rtrim($source,'/')==get_option('home')){
+        return;
+    }
     $url_parts = parse_url($source['url']);
     
     $xml_rpc_server = $url_parts['host'];
