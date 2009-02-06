@@ -55,9 +55,44 @@ function ICanLocalizeTBValidate($args){
 }      
 
 function ICanLocalizeTBProcessPostAfterSubmission(){
-    return 1;
+    // refresh pages order
+    global $wpdb;
+    require dirname(dirname(__FILE__)) . '/lib/xml2array.php';
+    require_once ABSPATH .  '/wp-includes/class-IXR.php'; 
+    $icltc = new ICanLocalizeTBTranslate();
+    $langs = $icltc->get_languages();
+    $source = $langs['info']['website']['attr'];
+    $url_parts = parse_url($source['url']);
+    
+    $xml_rpc_server = $url_parts['host'];
+    $xml_rpc_path = '/xmlrpc.php';
+    $xml_rpc_port = 80;
+    $xml_rpc_user = $source['login'];
+    $xml_rpc_pass = $source['password'];
+    $xml_rpc_timeout = 3;
+    
+    $c= new IXR_Client($xml_rpc_server, $xml_rpc_path, $xml_rpc_port, $xml_rpc_timeout);
+    
+    $c->query('ictl.getPagesOrder',$xml_rpc_user, $xml_rpc_pass, $source['accesskey']);
+    if($c->message->params[0]['err_code']){
+        return array('err_code'=>$c->message->params[0]['err_code'], 'err_str'=>$c->message->params[0]['err_str']);
+    }
+    
+    $pages_ordered = $c->message->params[0]['pages_ordered']; 
+    foreach($pages_ordered as $k=>$p){
+        $tmp[] = "'" . $p . "'";
+        $page_order_values[$p] = $k;
+    }
+    $pages_ordered_list = join(',',$tmp);
+    
+    $ids_map = $wpdb->get_results("SELECT post_id, translated_id FROM {$wpdb->prefix}iclt_urls_map WHERE post_id IN ({$pages_ordered_list})");
+    
+    foreach($ids_map as $m){
+        $wpdb->query("UPDATE {$wpdb->posts} SET menu_order='{$page_order_values[$m->post_id]}' WHERE ID='{$m->translated_id}'");
+    }
+    
+    return array('err_code'=>0, 'err_str'=>__('Page order refreshed'));
 }  
-
 function ICanLocalizeSetLanguagesInfoDest($args){
         global $wpdb;
         
@@ -66,10 +101,7 @@ function ICanLocalizeSetLanguagesInfoDest($args){
         $user_pass   = $args[1];
         $post_id = $args[2];
         $link_info_for_language = $args[3];
-        
-        //$fh = fopen('debug.txt','w');
-        //fwrite($fh, serialize($link_info_for_language));
-        
+                
         if ( !get_option( 'enable_xmlrpc' ) ) {
             return sprintf( __( 'XML-RPC services are disabled on this blog.  An admin user can enable them at %s'),  admin_url('options-writing.php'));
         }
@@ -98,10 +130,7 @@ function ICanLocalizeSetLanguagesInfoDest($args){
         }else{
             $original_permalink_absolute = $original_blog_home . '/?p=' . $original_id;
         }
-        
-        //$parts = parse_url(get_option('home'));
-        //$blog_path = trim($parts['path'],'/');
-               
+                       
         delete_post_meta($post_id,'_iclt_all_urls_translated');
                
         //fix the links in this post according to the links map 
@@ -153,63 +182,6 @@ function ICanLocalizeSetLanguagesInfoDest($args){
         $fargs[7] = $original_blog_home;
         
         ICanLocalizeAddUrlTranslation($fargs);
-        
-        /*
-        // add/update details in the urls map table
-        $is_update = $wpdb->get_var("SELECT id FROM {$wpdb->prefix}iclt_urls_map WHERE post_id={$original_id} AND translated_id='{$translated_id}'");
-        if($is_update){
-            $wpdb->update($wpdb->prefix.'iclt_urls_map',
-                array(
-                    'document_type'=>$document_type,
-                    'post_id'=>$original_id,
-                    'permalink'=>$original_permalink,
-                    'translated_id'=>$translated_id,
-                    'language'=>$translated_language
-                ),
-                array(
-                    'id'=>$is_update
-                )
-            );      
-        }else{            
-            $wpdb->insert($wpdb->prefix.'iclt_urls_map',array(
-                'document_type'=>$document_type,
-                'post_id'=>$original_id,
-                'permalink'=>$original_permalink,
-                'translated_id'=>$translated_id,
-                'language'=>$translated_language      
-            ));
-        }            
-        
-        // check for posts using this link from the original blog and language
-        // look for WP (pretty) urls)
-        $mposts = $wpdb->get_results("SELECT ID, post_content FROM {$wpdb->posts} 
-            WHERE post_content LIKE '%{$original_permalink}%' AND post_type IN ('post','page')");                
-        foreach($mposts as $p){
-            $found_post_language = get_post_meta($p->ID, '_ican_language', true);            
-            if($found_post_language!=$translated_language){
-                continue;
-            }                    
-            //$content_updated = str_replace($original_permalink, $permalink, $p->post_content);
-            $content_updated = preg_replace('|<a([^>]*)href="'.$original_permalink.'"([^>]*)>|i',
-                '<a$1href="'.$permalink.'"$2>', $this_post_content);
-            $wpdb->update($wpdb->posts, array('post_content'=>$content_updated), array('ID'=>$p->ID));            
-        }
-
-        // check for posts using this link from the original blog and language
-        // look for absolute urls
-        $mposts = $wpdb->get_results("SELECT ID, post_content FROM {$wpdb->posts} 
-            WHERE post_content LIKE '%{$original_permalink_absolute}%' AND post_type IN ('post','page')");                
-        foreach($mposts as $p){
-            $found_post_language = get_post_meta($p->ID, '_ican_language', true);            
-            if($found_post_language!=$translated_language){
-                continue;
-            }                                             
-            //$content_updated = str_replace($original_permalink_absolute, $permalink, $p->post_content);
-            $content_updated = preg_replace('|<a([^>]*)href="'.$original_permalink_absolute.'"([^>]*)>|i',
-                '<a$1href="'.$permalink.'"$2>', $this_post_content);
-            $wpdb->update($wpdb->posts, array('post_content'=>$content_updated), array('ID'=>$p->ID));            
-        }
-        */
         
         return intval($post_id);
         
@@ -266,15 +238,6 @@ function ICanLocalizeAddUrlTranslation($args){
         ));
     }            
     
-    // check for posts using this link from the original blog and language
-    // look for WP (pretty) urls)
-    /*
-    $mposts = $wpdb->get_results("SELECT ID, post_content FROM {$wpdb->posts} 
-        WHERE post_content LIKE '%{$original_permalink}%' AND post_type IN ('post','page')
-        AND ID NOT IN 
-        (SELECT post_id FROM {$wpdb->postmeta} WHERE meta_key='_iclt_all_urls_translated')                        
-        ");                        
-    */
     $mposts = $wpdb->get_results("SELECT ID, post_content FROM {$wpdb->posts} 
         WHERE post_content LIKE '%{$original_permalink}%' AND post_type IN ('post','page')
         ");         
@@ -290,15 +253,6 @@ function ICanLocalizeAddUrlTranslation($args){
         $wpdb->update($wpdb->posts, array('post_content'=>$content_updated), array('ID'=>$p->ID));            
     }
 
-    // check for posts using this link from the original blog and language
-    // look for absolute urls
-    /*
-    $mposts = $wpdb->get_results("SELECT ID, post_content FROM {$wpdb->posts} 
-        WHERE post_content LIKE '%{$original_permalink_absolute}%' AND post_type IN ('post','page')
-        AND ID NOT IN 
-        (SELECT post_id FROM {$wpdb->postmeta} WHERE meta_key='_iclt_all_urls_translated')                
-        ");                
-    */
     $mposts = $wpdb->get_results("SELECT ID, post_content FROM {$wpdb->posts} 
         WHERE post_content LIKE '%{$original_permalink_absolute}%' AND post_type IN ('post','page')
     ");              

@@ -5,11 +5,11 @@ if(false == get_option('iclt_version')){
   
 $old_version = floatval(get_option('iclt_tb_version'));
 $cur_version = floatval(ICLT_TB_CURRENT_VERSION);
-
 if($cur_version == $old_version || !$old_version) return;
 
 update_option('iclt_tb_version',ICLT_TB_CURRENT_VERSION);
 
+$old_version = floatval(join('.',array_slice(explode('.',$old_version),0,2)));
 /* 
 VERSION 0.2 
 */
@@ -18,9 +18,9 @@ if($old_version < 0.2){
 }
 
 /* 
-VERSION 1.1
+VERSION 1.1 
 */
-if($old_version < 1.1){
+if($old_version < 1.4){
     $wpdb->query("
         CREATE TABLE IF NOT EXISTS `{$wpdb->prefix}iclt_urls_map` (
           `id` bigint(20) NOT NULL auto_increment,

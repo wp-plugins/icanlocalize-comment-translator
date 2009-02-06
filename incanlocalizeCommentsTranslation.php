@@ -625,6 +625,21 @@ function iclt_comments_translator_activate(){
         "); 
     }    
     
+    $wpdb->query("
+        CREATE TABLE IF NOT EXISTS `{$wpdb->prefix}iclt_urls_map` (
+          `id` bigint(20) NOT NULL auto_increment,
+          `document_type` enum('post','page') NOT NULL default 'post',
+          `post_id` bigint(20) NOT NULL default '0',
+          `permalink` varchar(255) NOT NULL default '',
+          `translated_id` bigint(20) NOT NULL default '0',
+          `language` varchar(32) NOT NULL default '',
+          PRIMARY KEY  (`id`),
+          KEY `post_id_k` (`post_id`),
+          KEY `translated_id_k` (`translated_id`),
+          KEY `language` (`language`)
+        ) ENGINE=MyISAM
+        ");
+    
     delete_option('iclt_tb_version');
     add_option('iclt_tb_version',ICLT_TB_CURRENT_VERSION,'',true);
     
