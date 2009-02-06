@@ -14,7 +14,7 @@
                 <th scope="row">&nbsp;</th>
                 <td>
                     <div style="background:url(<?php echo ICLT_CT_PLUGIN_URL ?>/img/<?php echo $help_icon_image ?>);background-repeat:no-repeat;padding:4px 4px 4px 32px;border:solid 1px #eee;float:left;background-position:4px 4px;height:24px;<?php echo $help_bg_style ?>">
-                    <?php echo __('Need help? Visit'); ?> <a href="http://design.icanlocalize.com/wordpress-translation/using-icanlocalize-translator/">ICanLocalize Translation Getting Started Guide</a>.
+                    <?php if(isset($_GET['iclt_error'])) echo $_GET['iclt_error'] ?>&nbsp;<?php echo __('Need help? Visit'); ?> <a href="http://sitepress.org/wordpress-translation/using-icanlocalize-translator/">ICanLocalize Translation Getting Started Guide</a>.
                     </div>
                 </td>
             </tr>            

@@ -83,7 +83,7 @@ class ICanLocalizeTBTranslate{
         global $userdata, $wpdb;
 
         if(!$this->valid && !$_POST['Submit'] && $_POST['_wpnonce']!= wp_create_nonce('update-incalocalize-comments')){
-            $_GET['iclt_error']=__('Invalid settings for ICanLocalize Comment Translator.') . ' <a href="options-general.php?page=iclttc">'.__('Configure').'</a>';        
+            $_GET['iclt_error']=__('Invalid settings.');        
         }        
         
         get_currentuserinfo();
@@ -153,11 +153,12 @@ class ICanLocalizeTBTranslate{
         $nonce = wp_create_nonce('update-incalocalize-comments');
         if($nonce != $_POST['_wpnonce']) return;
         
-        $this->site_id = intval($_POST['iclt_site_id']);
+        $this->site_id = intval($_POST['iclt_site_id'])>0?intval($_POST['iclt_site_id']):'';
         $this->access_key = $_POST['iclt_access_key'];
-        $this->validate_settings();
-        if(!$this->valid){
-            $_GET['iclt_error'] .= __('Invalid settings for ICanLocalize Comment Translator');        
+        
+        $this->validate_settings();  
+        if(!$this->valid){                                                                          
+            $_GET['iclt_error'] .= __('Invalid settings.');        
         }else{
             $_GET['updated']=true;        
         }
@@ -187,9 +188,11 @@ class ICanLocalizeTBTranslate{
         ?><div id="message" class="updated fade"><p><?php echo __('Settings updated') ?></p></div><?php            
         }
         */
+        /*
         if($_GET['iclt_error']){
             ?><div id="message" class="error"><p><?php echo $_GET['iclt_error'] ?></p></div><?php            
         }
+        */
     }
     
     function pre_submit_comment_to_translation($comment_id){
@@ -462,7 +465,7 @@ class ICanLocalizeTBTranslate{
     
     function validate_settings(){
         require_once(ABSPATH . '/wp-includes/class-snoopy.php');
-        $request =  ICL_API_ENDOINT . 'websites/' . $this->site_id . '.xml?accesskey=' . $this->access_key;
+        $request =  ICL_API_ENDOINT . 'websites/' . intval($this->site_id) . '.xml?accesskey=' . $this->access_key;
         
         $de = ini_get('display_errors');
         ini_set('display_errors','off');

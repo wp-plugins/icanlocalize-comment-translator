@@ -32,9 +32,12 @@ function ICanLocalizeUpdateTextTranslation($args){
 }      
 
 function ICanLocalizeTBValidate($args){
-        
+        global $icltc;
         $user_login  = $args[0];
         $user_pass   = $args[1];
+        
+        $site_id     = $args[2];
+        $access_key  = $args[3];                
         
         if ( !get_option( 'enable_xmlrpc' ) ) {
             return array('err_code'=>3, 'err_str'=>sprintf( __( 'XML-RPC services are disabled on this blog.  An admin user can enable them at %s'),  admin_url('options-writing.php')));
@@ -45,12 +48,22 @@ function ICanLocalizeTBValidate($args){
         }
         
         $user = set_current_user( 0, $user_login );
+
+        $current_settings = get_option('iclt_tb_settings');
+        if(empty($current_settings['site_id']) && empty($current_settings['access_key'])){
+            $current_settings['site_id'] = $site_id;
+            $current_settings['access_key'] = $access_key;
+            $current_settings['valid'] = 1;
+            update_option('iclt_tb_settings', $current_settings);        
+        }
         
         if($user->caps['editor'] || $user->caps['administrator']){
-            return 0; //OK - user exists and has editor privileges (is editor or admin
+            return 0; //OK - user exists and has editor privileges (is editor or admin)
         }else{
             return 1; //ERROR - user exists but cannot edit
         }
+        
+        
     
 }      
 
