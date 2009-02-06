@@ -54,7 +54,20 @@ function ICanLocalizeTBValidate($args){
     
 }      
 
-function ICanLocalizeTBProcessPostAfterSubmission(){
+function ICanLocalizeTBProcessPostAfterSubmission($args){
+    
+    $user_login  = $args[0];
+    $user_pass   = $args[1];
+    $post_id     = $args[2];
+    
+    if ( !get_option( 'enable_xmlrpc' ) ) {
+        return array('err_code'=>3, 'err_str'=>sprintf( __( 'XML-RPC services are disabled on this blog.  An admin user can enable them at %s'),  admin_url('options-writing.php')));
+    }
+    
+    if (!user_pass_ok($user_login, $user_pass)) {         
+        return array('err_code'=>2, 'err_str'=>sprintf( __( 'ERROR - user or password don’t match')));
+    }        
+
     // refresh pages order
     global $wpdb;
     require dirname(dirname(__FILE__)) . '/lib/xml2array.php';
